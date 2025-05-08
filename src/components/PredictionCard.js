@@ -1,18 +1,22 @@
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, Image } from 'react-native';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { COLORS } from '../utils/colors';
+import { COLORS } from '../../src/utils/colors';
 
 const PredictionCard = ({ prediction, onPress }) => {
   const getResultIcon = (result) => {
-    switch (result) {
-      case 'Normal':
-        return require('../../assets/image/heart_ecg_icon.jpg'); // Image 2
-      case 'Anormal':
-        return require('../../assets/image/heart_cross_icon.jpg'); // Image 3
-      default:
-        return require('../../assets/image/heart_ecg_icon.jpg'); // Par défaut
+    if (!result) return require('../../assets/image/heart_ecg_icon.jpg');
+    
+    const lowerResult = result.toLowerCase();
+    if (lowerResult.includes('anormal') || lowerResult.includes('anomal')) {
+      return require('../../assets/image/heart_cross_icon.jpg');
     }
+    return require('../../assets/image/heart_ecg_icon.jpg');
+  };
+
+  const formatResultText = (result) => {
+    if (!result) return 'Résultat: Inconnu';
+    return `Résultat: ${result}`;
   };
 
   return (
@@ -24,11 +28,17 @@ const PredictionCard = ({ prediction, onPress }) => {
         />
       </View>
       <View style={styles.content}>
-        <Text style={styles.date}>{prediction.date}</Text>
-        <Text style={styles.result}>Résultat: {prediction.result}</Text>
-        <Text style={styles.confidence}>Confiance: {(prediction.confidence * 100).toFixed(2)}%</Text>
+        <Text style={styles.date}>{prediction.date || 'Date inconnue'}</Text>
+        <Text style={styles.result}>{formatResultText(prediction.result)}</Text>
+        {prediction.confidence > 0 && (
+          <Text style={styles.confidence}>
+            Confiance: {(prediction.confidence * 100).toFixed(2)}%
+          </Text>
+        )}
         {prediction.diagnostic && (
-          <Text style={styles.diagnostic}>Diagnostic: {prediction.diagnostic}</Text>
+          <Text style={styles.diagnostic}>
+            Diagnostic: {prediction.diagnostic}
+          </Text>
         )}
       </View>
       <Icon name="chevron-right" size={20} color={COLORS.textLight} style={styles.arrow} />
@@ -81,6 +91,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: COLORS.error,
     marginTop: 3,
+    fontStyle: 'italic',
   },
   arrow: {
     marginLeft: 10,

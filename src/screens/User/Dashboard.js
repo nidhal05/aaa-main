@@ -13,9 +13,18 @@ const Dashboard = ({ navigation }) => {
       
       <TouchableOpacity 
         style={styles.button}
+        onPress={() => navigation.navigate('AdminDashboard')}
+      >
+        <Text style={styles.buttonText}>Espace Administrateur </Text>
+        
+      </TouchableOpacity>
+      
+      <TouchableOpacity 
+        style={styles.button}
         onPress={() => navigation.navigate('PredictionScreen')}
       >
         <Text style={styles.buttonText}>Voir les prédictions </Text>
+        
       </TouchableOpacity>
 
       <TouchableOpacity 
