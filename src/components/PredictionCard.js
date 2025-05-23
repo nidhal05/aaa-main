@@ -4,40 +4,47 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { COLORS } from '../../src/utils/colors';
 
 const PredictionCard = ({ prediction, onPress }) => {
-  const getResultIcon = (result) => {
-    if (!result) return require('../../assets/image/heart_ecg_icon.jpg');
+  const getResultIcon = () => {
+    if (!prediction.result) return require('../../assets/image/heart_ecg_icon.jpg');
     
-    const lowerResult = result.toLowerCase();
+    const lowerResult = prediction.result.toLowerCase();
     if (lowerResult.includes('anormal') || lowerResult.includes('anomal')) {
       return require('../../assets/image/heart_cross_icon.jpg');
     }
     return require('../../assets/image/heart_ecg_icon.jpg');
   };
 
-  const formatResultText = (result) => {
-    if (!result) return 'Résultat: Inconnu';
-    return `Résultat: ${result}`;
+  const getResultColor = () => {
+    if (!prediction.result) return COLORS.primary;
+    
+    const lowerResult = prediction.result.toLowerCase();
+    if (lowerResult.includes('anormal') || lowerResult.includes('anomal')) {
+      return COLORS.error;
+    }
+    return COLORS.success;
   };
 
   return (
     <TouchableOpacity style={styles.card} onPress={onPress}>
       <View style={styles.iconContainer}>
         <Image
-          source={getResultIcon(prediction.result)}
+          source={getResultIcon()}
           style={styles.icon}
         />
       </View>
       <View style={styles.content}>
-        <Text style={styles.date}>{prediction.date || 'Date inconnue'}</Text>
-        <Text style={styles.result}>{formatResultText(prediction.result)}</Text>
+        <Text style={styles.date}>{prediction.date}</Text>
+        <Text style={[styles.result, { color: getResultColor() }]}>
+          {prediction.result || 'Résultat inconnu'}
+        </Text>
         {prediction.confidence > 0 && (
           <Text style={styles.confidence}>
-            Confiance: {(prediction.confidence * 100).toFixed(2)}%
+            Confiance: {(prediction.confidence * 100).toFixed(1)}%
           </Text>
         )}
         {prediction.diagnostic && (
           <Text style={styles.diagnostic}>
-            Diagnostic: {prediction.diagnostic}
+            {prediction.diagnostic}
           </Text>
         )}
       </View>
@@ -79,16 +86,16 @@ const styles = StyleSheet.create({
   },
   result: {
     fontSize: 14,
-    color: COLORS.primary,
     marginTop: 5,
+    fontWeight: '600',
   },
   confidence: {
-    fontSize: 14,
+    fontSize: 12,
     color: COLORS.textLight,
     marginTop: 3,
   },
   diagnostic: {
-    fontSize: 14,
+    fontSize: 12,
     color: COLORS.error,
     marginTop: 3,
     fontStyle: 'italic',

@@ -11,13 +11,7 @@ const Dashboard = ({ navigation }) => {
       <Text style={styles.title}>Bienvenue {user?.displayName}</Text>
       <Text style={styles.subtitle}>Tableau de bord utilisateur</Text>
       
-      <TouchableOpacity 
-        style={styles.button}
-        onPress={() => navigation.navigate('AdminDashboard')}
-      >
-        <Text style={styles.buttonText}>Espace Administrateur </Text>
-        
-      </TouchableOpacity>
+      
       
       <TouchableOpacity 
         style={styles.button}
